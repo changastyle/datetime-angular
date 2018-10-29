@@ -1,0 +1,95 @@
+<html>
+	<head>
+	
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	
+		<link rel="stylesheet" href="angularjs-datetime-picker.css" />
+		<script src="angularjs-datetime-picker.js"></script>
+		
+		<!--<link rel="stylesheet" href="timedropper.css" />
+		<script src="timedropper.js"></script>-->
+		
+	</head>
+	<body ng-app="app" ng-controller="test" ng-init="init()" ng-cloak>
+		
+		<input ng-model="xx" datetime-picker date-format="dd/MM/yyyy HH:mm" future-only/>
+		<button class="btn btn-default" ng-click="queTengo()">GO!</button>
+		<button class="btn btn-default" ng-click="dameFecha()">TRAER!</button>
+                
+                {{xx}}
+		
+	</body>
+	<script>
+	app = angular.module('app', ['angularjs-datetime-picker']);
+	 
+	app.controller('test', function($scope) 
+	{
+            //$scope.xx  = 222222;
+
+            $scope.init = function()
+            {
+                //$scope.dameFecha();
+            }
+            $scope.queTengo = function()
+            {
+                console.log("fecha: " + $scope.xx);
+            }
+            $scope.dameFecha = function()
+            {
+                $.ajax
+                ({
+                    url:"concha.html",
+                    beforeSend: function (xhr) 
+                    {
+                        $scope.cargando = true;
+                    },
+                    success: function (resultado, textStatus, jqXHR) 
+                    {
+                        console.log("resultado : " + resultado);
+                        fecha = new Date(parseInt(resultado));
+                        console.log("fecha : " + fecha);
+                        
+                        $scope.xx = $scope.convertirFechaJSToHuman(fecha);
+                        
+                        console.log("tengo : " +  $scope.xx);
+                        $scope.cargando = false;
+                        $scope.$evalAsync();
+                    }
+
+                });
+            }
+            $scope.convertirFechaJSToHuman = function(fecha)
+            {
+                salida = -1;
+                
+                dia = fecha.getDate();
+                strDia = "" + dia;
+                if(dia < 10)
+                {
+                    strDia = "0"+ dia;
+                }
+                mes = fecha.getMonth();
+                strMes = "" + mes;
+                if(mes < 10)
+                {
+                    strMes = "0"+ mes;
+                }
+                year = ( fecha.getYear() + 1900 );
+                strYear = "" + year;
+
+                hours = fecha.getHours();
+                strHours = "" + hours;
+
+                minutes = fecha.getMinutes();
+                strMinutes = "" + minutes;
+
+                salida = "" + strDia  + "/" + strMes + "/" + strYear + " " + strHours + ":" + strMinutes;
+                
+                return salida;
+            }
+	});
+	</script>
+</html>
